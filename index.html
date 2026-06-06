@@ -15,10 +15,7 @@
       background: #0f0f0f;
     }
 
-    #map {
-      height: 100vh;
-      width: 100%;
-    }
+    #map { height: 100vh; width: 100%; }
 
     #title-card {
       position: absolute;
@@ -105,7 +102,6 @@
       display: block;
     }
 
-    /* Leaflet popup overrides */
     .leaflet-popup-content-wrapper {
       background: rgba(10,10,10,0.95);
       border: 1px solid rgba(255,255,255,0.12);
@@ -115,13 +111,8 @@
       backdrop-filter: blur(12px);
     }
 
-    .leaflet-popup-tip {
-      background: rgba(10,10,10,0.95);
-    }
-
-    .leaflet-popup-close-button {
-      color: rgba(255,255,255,0.4) !important;
-    }
+    .leaflet-popup-tip { background: rgba(10,10,10,0.95); }
+    .leaflet-popup-close-button { color: rgba(255,255,255,0.4) !important; }
 
     .leaflet-popup-content {
       margin: 14px 16px;
@@ -142,32 +133,13 @@
       margin-bottom: 10px;
     }
 
-    .popup-stat {
-      font-size: 11px;
-      color: rgba(255,255,255,0.5);
-    }
+    .popup-stat { font-size: 11px; color: rgba(255,255,255,0.5); }
 
     .popup-stat span {
       display: block;
       font-size: 14px;
       font-weight: 500;
       color: rgba(255,255,255,0.9);
-    }
-
-    .popup-photo {
-      width: 220px;
-      height: 140px;
-      object-fit: cover;
-      border-radius: 3px;
-      margin-top: 8px;
-      display: block;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .popup-photo-caption {
-      font-size: 10px;
-      color: rgba(255,255,255,0.3);
-      margin-top: 5px;
     }
 
     .zone-dot {
@@ -177,6 +149,39 @@
       border-radius: 50%;
       margin-right: 6px;
       vertical-align: middle;
+    }
+
+    .popup-gallery {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      margin-top: 8px;
+      padding-bottom: 6px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.2) transparent;
+    }
+
+    .popup-gallery::-webkit-scrollbar { height: 3px; }
+    .popup-gallery::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+    .popup-gallery::-webkit-scrollbar-track { background: transparent; }
+
+    .popup-gallery img {
+      width: 200px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 3px;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      border: 1px solid rgba(255,255,255,0.08);
+      display: block;
+    }
+
+    .popup-gallery-hint {
+      font-size: 10px;
+      color: rgba(255,255,255,0.25);
+      margin-top: 5px;
+      text-align: right;
     }
 
     .leaflet-control-attribution {
@@ -216,25 +221,33 @@
   <script>
 
     const ZONE_CONFIG = {
-      '商業地域':               { color: '#e05c4a', label: 'Commercial',                  sublabel: '商業地域' },
-      '近隣商業地域':           { color: '#e8924a', label: 'Neighbourhood Commercial',     sublabel: '近隣商業地域' },
-      '準工業地域':             { color: '#9e9e8e', label: 'Quasi-Industrial',             sublabel: '準工業地域' },
-      '第一種住居地域':         { color: '#5b8dd9', label: 'Category 1 Residential',       sublabel: '第一種住居地域' },
-      '第一種中高層住居専用地域': { color: '#8b6bb5', label: 'Mid-High Rise Excl. Res.',  sublabel: '第一種中高層住居専用地域' },
-      '第二種中高層住居専用地域': { color: '#5baaa0', label: 'Mid-High Rise Res. (2)',    sublabel: '第二種中高層住居専用地域' },
-      '第一種低層住居専用地域': { color: '#6aab72', label: 'Low-Rise Excl. Residential',   sublabel: '第一種低層住居専用地域' },
+      '商業地域':                 { color: '#e05c4a', label: 'Commercial',               sublabel: '商業地域' },
+      '近隣商業地域':             { color: '#e8924a', label: 'Neighbourhood Commercial',  sublabel: '近隣商業地域' },
+      '準工業地域':               { color: '#9e9e8e', label: 'Quasi-Industrial',          sublabel: '準工業地域' },
+      '第一種住居地域':           { color: '#5b8dd9', label: 'Category 1 Residential',    sublabel: '第一種住居地域' },
+      '第一種中高層住居専用地域': { color: '#8b6bb5', label: 'Mid-High Rise Excl. Res.', sublabel: '第一種中高層住居専用地域' },
+      '第二種中高層住居専用地域': { color: '#5baaa0', label: 'Mid-High Rise Res. (2)',   sublabel: '第二種中高層住居専用地域' },
+      '第一種低層住居専用地域':   { color: '#6aab72', label: 'Low-Rise Excl. Residential', sublabel: '第一種低層住居専用地域' },
+    };
+
+    // Photos per zone type — filenames relative to repo root
+    const PHOTO_MAP = {
+      '商業地域':                 ['Commercial.JPG', 'Commercial1.JPG', 'Commercial2.JPG'],
+      '近隣商業地域':             ['NeighbourhoodCommercial.JPG', 'NeighbourhoodCommercial1.JPG'],
+      '第一種低層住居専用地域':   ['Low-Rise.JPG', 'Low-Rise1.JPG', 'Low-Rise2.JPG', 'Low-Rise3.JPG', 'Low-Rise4.JPG'],
+      '第一種中高層住居専用地域': ['Mid-to-High-Rise.JPG', 'Mid-to-High-Rise1.JPG', 'Mid-to-High-Rise2.JPG', 'Mid-to-High-Rise3.JPG'],
+      '第一種住居地域':           ['Category1Residential.JPG', 'Category1Residential1.JPG', 'Category1Residential2.JPG'],
+      '準工業地域':               ['industrial1.JPG', 'industrial2.JPG'],
     };
 
     const DEFAULT_COLOR = '#666655';
 
-    // Nakano-ku center
     const map = L.map('map', {
       center: [35.7073, 139.6630],
       zoom: 14,
       zoomControl: true
     });
 
-    // Dark basemap
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_matter/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
       subdomains: 'abcd',
@@ -283,9 +296,12 @@
             const bld = p.A29_006 && p.A29_006 !== 9999 ? p.A29_006 + '%' : '—';
             const far = p.A29_007 && p.A29_007 !== 9999 ? p.A29_007 + '%' : '—';
 
-            const photoHtml = p.image_url
-              ? `<img src="${p.image_url}" class="popup-photo" alt="${zone}">
-                 <div class="popup-photo-caption">${p.photo_caption || ''}</div>`
+            const photos = PHOTO_MAP[zone] || [];
+            const galleryHtml = photos.length > 0
+              ? `<div class="popup-gallery">
+                  ${photos.map(f => `<img src="${f}" alt="${zone}" loading="lazy">`).join('')}
+                </div>
+                ${photos.length > 1 ? `<div class="popup-gallery-hint">← scroll for more · ${photos.length} photos</div>` : ''}`
               : '';
 
             layer.bindPopup(`
@@ -296,8 +312,8 @@
                 <div class="popup-stat">建蔽率<span>${bld}</span></div>
                 <div class="popup-stat">容積率<span>${far}</span></div>
               </div>
-              ${photoHtml}
-            `, { maxWidth: 260 });
+              ${galleryHtml}
+            `, { maxWidth: 240 });
 
             layer.on('mouseover', function() {
               this.setStyle({ fillOpacity: 0.8, weight: 2 });
