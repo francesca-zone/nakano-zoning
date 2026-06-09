@@ -111,6 +111,42 @@
     .cell-no  { color: rgba(0,0,0,0.12); font-size: 11px; }
     .col-header-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-bottom: 3px; }
 
+    /* Explanation panel */
+    #info-panel {
+      position: absolute; bottom: 30px; right: 0;
+      z-index: 1000; display: flex; align-items: stretch;
+    }
+    #info-tab {
+      background: rgba(255,255,255,0.93); border: 1px solid rgba(0,0,0,0.08);
+      border-right: none; border-radius: 4px 0 0 4px;
+      padding: 14px 8px; cursor: pointer; writing-mode: vertical-rl;
+      text-orientation: mixed; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; color: rgba(0,0,0,0.5); user-select: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+    #info-tab:hover { color: rgba(0,0,0,0.8); background: #fff; }
+    #info-tab .arrow { font-style: normal; transition: transform 0.25s; display: inline-block; writing-mode: horizontal-tb; }
+    #info-content {
+      background: rgba(255,255,255,0.97); border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 4px 0 0 4px;
+      max-height: 60vh; overflow-y: auto; overflow-x: hidden;
+      width: 0; opacity: 0;
+      transition: width 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+      padding: 0;
+    }
+    #info-panel.open #info-content {
+      width: 360px; opacity: 1; padding: 18px 20px;
+    }
+    #info-panel.open #info-tab .arrow { transform: rotate(180deg); }
+    #info-content h3 {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(0,0,0,0.32); margin-bottom: 12px; white-space: nowrap;
+    }
+    #info-content p {
+      font-size: 12.5px; line-height: 1.9; color: rgba(0,0,0,0.72);
+      font-weight: 300; white-space: normal;
+    }
+
     /* Leaflet overrides */
     .leaflet-control-attribution { font-size: 9px !important; }
     .leaflet-control-zoom a { background: rgba(255,255,255,0.93) !important; border-color: rgba(0,0,0,0.1) !important; color: #333 !important; }
@@ -136,6 +172,17 @@
   <div id="uses-content">
     <h3>用途地域 — 建築可能用途</h3>
     <table class="uses-table" id="uses-table"></table>
+  </div>
+</div>
+
+<div id="info-panel">
+  <div id="info-tab" onclick="toggleInfo()">
+    <span class="arrow">◀</span>
+    解説
+  </div>
+  <div id="info-content">
+    <h3>日本のゾーニングについて</h3>
+    <p>日本のゾーニング制度は英語圏のゾーニング制度と違います。日本のゾーニング制度は一元的で、簡単です。十二都市計画区域があります。それらの中野には七都市計画区域があります。銘々都市計画区域は新しい活動を許す、商業活動が全然できない都市計画区域がありません。住居専用地域でも学校とお寺は許可されています。英語圏でユークリッド空間のゾーニングという制度があります。このゾーニング制度でそれぞれ地域は一つ利用しかは許可されていません。しかし、日本の都市で順々に地域では使用回数が増えますが、減ることはありません。だから、日本のゾーニング制度はもっとフレキシブルな制度で、時代が変わるにつれて日本の都市も変わることだできます。</p>
   </div>
 </div>
 
@@ -177,9 +224,9 @@
     { ja: '映画館',       en: 'Cinema',             p: [0,0,0,0,0,1,1] },
     { ja: '銭湯',         en: 'Public bath',        p: [1,1,1,1,1,1,1] },
     { ja: '車庫',         en: 'Garage',             p: [0,1,1,1,1,1,1] },
-    { ja: '保存庫',       en: 'Storage',            p: [0,1,1,1,1,0,1] },
-    { ja: '工場 (低リスク)', en: 'Factory (low risk)', p: [0,0,0,1,1,1,1] },
-    { ja: '工場 (高リスク)', en: 'Factory (high risk)', p: [0,0,0,0,0,0,1] },
+    { ja: '保存庫',       en: 'Storage',            p: [0,1,1,1,1,1,1] },
+    { ja: '工場 (低リスク)', en: 'Factory (low risk)', p: [0,0,0,0,0,0,1] },
+    { ja: '工場 (高リスク)', en: 'Factory (high risk)', p: [0,0,0,0,0,0,0] },
   ];
 
   const COL_ZONES = [
@@ -221,6 +268,10 @@
 
   function toggleUses() {
     document.getElementById('uses-panel').classList.toggle('open');
+  }
+
+  function toggleInfo() {
+    document.getElementById('info-panel').classList.toggle('open');
   }
 
   buildUsesTable();
