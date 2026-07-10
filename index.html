@@ -156,6 +156,42 @@
       border-top: 1px solid rgba(0,0,0,0.08);
     }
     #info-content p + p { margin-top: 10px; }
+
+/* Citation button + panel */
+    #cite-button {
+      position: absolute; top: 20px; right: 20px; z-index: 1000;
+      background: rgba(255,255,255,0.93); backdrop-filter: blur(12px);
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 4px;
+      padding: 10px 14px; cursor: pointer;
+      font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(0,0,0,0.55);
+      user-select: none; transition: color 0.2s, background 0.2s;
+    }
+    #cite-button:hover { color: #111; background: #fff; }
+
+    #cite-panel {
+      position: absolute; top: 60px; right: 20px; z-index: 1000;
+      background: rgba(255,255,255,0.97); backdrop-filter: blur(12px);
+      border: 1px solid rgba(0,0,0,0.08); border-radius: 4px;
+      padding: 16px 18px; max-width: 380px;
+      display: none;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    }
+    #cite-panel.open { display: block; }
+    #cite-panel h3 {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(0,0,0,0.32); margin-bottom: 10px;
+    }
+    #cite-panel p {
+      font-size: 12px; line-height: 1.7; color: rgba(0,0,0,0.75);
+      font-weight: 300;
+    }
+    #cite-panel a {
+      color: rgba(0,0,0,0.75); text-decoration: underline;
+      text-decoration-color: rgba(0,0,0,0.25); word-break: break-all;
+    }
+    #cite-panel a:hover { text-decoration-color: rgba(0,0,0,0.6); }
     /* Leaflet overrides */
     .leaflet-control-attribution { font-size: 9px !important; }
     .leaflet-control-zoom a { background: rgba(255,255,255,0.93) !important; border-color: rgba(0,0,0,0.1) !important; color: #333 !important; }
@@ -170,7 +206,11 @@
   <h1>中野区 · Nakano-ku</h1>
   <p>用途地域 · Land Use Zoning Map</p>
 </div>
-
+<div id="cite-button" onclick="toggleCite()">出典</div>
+<div id="cite-panel">
+  <h3>参考文献</h3>
+  <p>国土交通省国土政策局国土情報課「国土数値情報（用途地域データ　A29）」（2019年度、東京都）<a href="https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-A29-v2_1.html" target="_blank" rel="noopener">https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-A29-v2_1.html</a>（2026年6月2日閲覧）</p>
+</div>
 <div id="legend"><h3>用途地域</h3></div>
 
 <div id="uses-panel">
@@ -286,6 +326,10 @@
 
   function toggleInfo() {
     document.getElementById('info-panel').classList.toggle('open');
+  }
+
+  function toggleCite() {
+    document.getElementById('cite-panel').classList.toggle('open');
   }
 
   buildUsesTable();
